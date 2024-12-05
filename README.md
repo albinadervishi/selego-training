@@ -2,30 +2,28 @@
 
 ## 🚀 Quick Start
 
-### Installation
-
 1. Create a new project on GitHub
 
 2. Copy and paste the files from the Boilerplate into your project
 
 3. Replace all `[boilerplate_name]` with your project's name
 
-4. Install the dependencies
+### API Installation
+
+1. Install the dependencies
 
    ```bash
    cd api
    npm install
-   cd app
-   npm install
    ```
 
-5. Create your database on Clever Cloud
+2. Create your database on Clever Cloud
 
    - Create a MongoDB add-on
    - Retrieve the MongoDB connection URI from the add-on information
    - Insert the URI into your `.env` file:
 
-6. Configure Sentry
+3. Configure Sentry
 
    In `api/src/services/sentry.js`, add your Sentry DSN:
 
@@ -36,11 +34,35 @@
    });
    ```
 
-7. Start the server
+4. Start the server
 
    ```bash
    cd api
    npm run dev
+   ```
+
+---
+
+### APP Installation
+
+1. Install the dependencies
+
+   ```bash
+   cd app
+   npm install
+   ```
+
+2. Configure Sentry
+
+   In `app/src/config.js`, add your Sentry DSN:
+
+   ```javascript
+   const SENTRY_URL = 'YOUR_SENTRY_URL'
+   ```
+
+3. Start the server
+
+   ```bash
    cd app
    npm run dev
    ```

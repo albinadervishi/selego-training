@@ -1,75 +1,93 @@
 import { useEffect, useState } from 'react'
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import * as Sentry from '@sentry/browser'
 
-import Auth from '@/pages/auth'
-import Account from '@/pages/account'
-import Home from '@/pages/home'
+import Auth from '@/scenes/auth'
+import Home from '@/scenes/home'
 
-import useStore from '@/store'
+import useStore from '@/services/store'
 
 import ResponsiveIndicator from '@/components/ResponsiveIndicator'
-import Drawer from '@/components/drawer'
+import Navbar from '@/components/NavBar'
+import TopBar from '@/components/TopBar'
 import Loader from '@/components/loader'
 
 import api from '@/services/api'
 
 import { environment, SENTRY_URL } from './config'
 
-
 if (environment === 'production') {
   Sentry.init({ dsn: SENTRY_URL, environment: 'app' })
 }
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
-
-  const { user, setUser } = useStore()
-  const { organization, setOrganization } = useStore()
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await api.get('/user/signin_token')
-        if (res.token) api.setToken(res.token)
-        setUser(res.user)
-
-        const { data, ok } = await api.post(`/organization/search`)
-        if (!ok) return
-        setOrganization(data[0])
-      } catch (e) {
-        console.log(e)
-      }
-      setLoading(false)
-    }
-    fetchData()
-  }, [])
-
-  if (loading) return <Loader />
-
-  // return <Auth />
-
   return (
     <BrowserRouter>
-      <div className={`${user && 'flex flex-col h-screen overflow-hidden lg:flex-row'}`}>
-        {user && <Drawer />}
-        <main className={`${user && 'flex-1 overflow-y-auto bg-background-secondary p-6'}`}>
-          <Route path='/auth' component={Auth} />
-          <Switch>
-            <RestrictedRoute path='/account' component={Account} />
-            <RestrictedRoute path='/' component={Home} exact />
-          </Switch>
-          <Toaster position='top-center' />
-          <ResponsiveIndicator />
-        </main>
-      </div>
+      <Routes>
+        <Route element={<AuthLayout />}>
+          <Route path='/auth/*' element={<Auth />} />
+        </Route>
+        <Route element={<UserLayout />}>
+          <Route path='/' element={<Home />} />
+        </Route>
+        <Route path='*' element={<Navigate to='/' />} />
+      </Routes>
+      <Toaster position='top-center' />
     </BrowserRouter>
   )
 }
 
-const RestrictedRoute = ({ component: Component, role, ...rest }) => {
+const AuthLayout = () => {
   const { user } = useStore()
+  if (user) return <Navigate to='/' replace={true} />
+  return (
+    <div className='flex flex-col justify-center items-center gap-8 w-screen h-screen'>
+      <h1 className='text-3xl font-bold'>Boilerplate</h1>
+      <Outlet />
+    </div>
+  )
+}
 
-  return <Route {...rest} render={props => (user ? <Component {...props} /> : <Redirect to={{ pathname: '/auth' }} />)} />
+const UserLayout = () => {
+  const [loading, setLoading] = useState(true)
+
+  const { user, setUser } = useStore()
+
+  async function fetchUser() {
+    try {
+      const res = await api.get('/user/signin_token')
+      if (res.token) api.setToken(res.token)
+      setUser(res.user)
+    } catch (e) {
+      console.log(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
+  if (loading) return <Loader />
+
+  if (!user) {
+    setUser(null)
+    return <Navigate to='/auth' replace={true} />
+  }
+
+  return (
+    <div className='flex flex-col h-screen overflow-hidden lg:flex-row'>
+      <nav className='w-56 absolute left-0 top-0'>
+        <Navbar />
+      </nav>
+      <main className='ml-56 h-full w-full overflow-auto bg-gray-50'>
+        <div className='h-14 border-b border-secondary bg-white'>
+          <TopBar />
+        </div>
+        <Outlet />
+      </main>
+    </div>
+  )
 }
