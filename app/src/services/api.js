@@ -80,7 +80,7 @@ class api {
     })
   }
 
-  remove(path) {
+  delete(path) {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
