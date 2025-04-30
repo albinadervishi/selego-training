@@ -1,10 +1,10 @@
-import 'isomorphic-fetch'
+import "isomorphic-fetch"
 
-import { apiURL } from '../config'
+import { apiURL } from "../config"
 
 class api {
   constructor() {
-    this.token = ''
+    this.token = ""
   }
 
   getToken() {
@@ -12,7 +12,7 @@ class api {
   }
 
   removeToken() {
-    this.token = ''
+    this.token = ""
   }
 
   setToken(token) {
@@ -23,10 +23,10 @@ class api {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', Authorization: `JWT ${this.token}` }
+          mode: "cors",
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` }
         })
 
         const res = await response.json()
@@ -41,11 +41,11 @@ class api {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          method: 'PUT',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', Authorization: `JWT ${this.token}` },
-          body: typeof body === 'string' ? body : JSON.stringify(body)
+          mode: "cors",
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+          body: typeof body === "string" ? body : JSON.stringify(body)
         })
 
         const res = await response.json()
@@ -58,23 +58,23 @@ class api {
 
   postFormData(path, file) {
     let formData = new FormData()
-    console.log('file', file)
+    console.log("file", file)
     formData.append(file.name, file, file.name)
     return new Promise(async (resolve, reject) => {
       try {
         console.log(`${apiURL}${path}`)
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          method: 'POST',
-          credentials: 'include',
+          mode: "cors",
+          method: "POST",
+          credentials: "include",
           headers: {},
           body: formData
         })
         const res = await response.json()
-        console.log('e', res)
+        console.log("e", res)
         resolve(res)
       } catch (e) {
-        console.log('e', e)
+        console.log("e", e)
         reject(e)
       }
     })
@@ -84,10 +84,10 @@ class api {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          credentials: 'include',
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json', Authorization: `JWT ${this.token}` }
+          mode: "cors",
+          credentials: "include",
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` }
         })
         const res = await response.json()
         resolve(res)
@@ -101,11 +101,11 @@ class api {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', Authorization: `JWT ${this.token}` },
-          body: typeof body === 'string' ? body : JSON.stringify(body)
+          mode: "cors",
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+          body: typeof body === "string" ? body : JSON.stringify(body)
         })
 
         const res = await response.json()
@@ -122,11 +122,11 @@ class api {
     return new Promise(async (resolve, reject) => {
       try {
         const response = await fetch(`${apiURL}${path}`, {
-          mode: 'cors',
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json', Authorization: `JWT ${this.token}` },
-          body: typeof body === 'string' ? body : JSON.stringify(body)
+          mode: "cors",
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json", Authorization: `JWT ${this.token}` },
+          body: typeof body === "string" ? body : JSON.stringify(body)
         })
 
         if (response.status !== 200) {
