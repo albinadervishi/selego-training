@@ -1,14 +1,20 @@
-import { clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
+/** Merge class names.
+ * @param {...string} inputs - The class names to merge
+ * @returns {string} - The merged class names
+ */
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
 }
 
-export function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
+/** Format a date to YYYY-MM-DD.
+ * @param {string} isoDateString - The ISO date string
+ * @returns {string} - The formatted date
+ * @example
+ * formatDateToYYYYMMDD('2021-01-01T00:00:00.000Z') // '2021-01-01'
+ */
 export function formatDateToYYYYMMDD(isoDateString) {
   const date = new Date(isoDateString)
   const year = date.getFullYear()

@@ -3,11 +3,17 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const { SECRET } = require("../config");
 const Sentry = require("@sentry/node");
-// load up the user model
 const User = require("../models/user");
+
+function getToken(req) {
+  let token = ExtractJwt.fromAuthHeaderWithScheme("JWT")(req);
+  if (!token) token = req.cookies.jwt;
+  return token;
+}
+
 module.exports = function (app) {
   const opts = {};
-  opts.jwtFromRequest = (req) => req.cookies.jwt;
+  opts.jwtFromRequest = getToken;
   opts.secretOrKey = SECRET;
 
   passport.use(
