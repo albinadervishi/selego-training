@@ -1,11 +1,12 @@
 {
-  "name": "boilerplate-api-node",
+  "name": "eventhub-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "EventHub API - Event Management Platform",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.js",
     "start": "node ./src/index.js",
+    "seed": "node ./src/scripts/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

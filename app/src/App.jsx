@@ -4,8 +4,12 @@ import { Toaster } from "react-hot-toast"
 import * as Sentry from "@sentry/browser"
 
 import Auth from "@/scenes/auth"
-import Home from "@/scenes/home"
+import Dashboard from "@/scenes/dashboard"
+import Events from "@/scenes/events"
 import Account from "@/scenes/account"
+import EventView from "@/scenes/events/view"
+import MyEvents from "@/scenes/my-events"
+import MyRegistrations from "@/scenes/my-registrations"
 
 import Navbar from "@/components/NavBar"
 import TopBar from "@/components/TopBar"
@@ -28,7 +32,11 @@ export default function App() {
           <Route path="/auth/*" element={<Auth />} />
         </Route>
         <Route element={<UserLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/*" element={<Events />} />
+          <Route path="/event/:id/*" element={<EventView />} />
+          <Route path="/my-events" element={<MyEvents />} />
+          <Route path="/my-registrations" element={<MyRegistrations />} />
           <Route path="/account" element={<Account />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
@@ -41,12 +49,7 @@ export default function App() {
 const AuthLayout = () => {
   const { user } = useStore()
   if (user) return <Navigate to="/" replace={true} />
-  return (
-    <div className="flex flex-col justify-center items-center gap-8 w-screen h-screen">
-      <h1 className="text-3xl font-bold">Boilerplate</h1>
-      <Outlet />
-    </div>
-  )
+  return <Outlet />
 }
 
 const UserLayout = () => {

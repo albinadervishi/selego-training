@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import toast from "react-hot-toast"
 import validator from "validator"
 import { useSearchParams, useNavigate, Link } from "react-router-dom"
-import { FiMail, FiEye, FiEyeOff, FiLock, FiUser } from "react-icons/fi"
+import { FiEye, FiEyeOff } from "react-icons/fi"
 // import { useGoogleLogin } from "@react-oauth/google";
 
 import Loader from "../../components/loader"
@@ -15,14 +15,202 @@ export default function Signin() {
   const [userExists, setUserExists] = useState(null)
   const [forgotPassword, setForgotPassword] = useState(false)
 
-  const { agency } = store()
-
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="relative max-w-md w-full px-4">
-        <div className="relative bg-white rounded-xl border border-blue-500/20 shadow-2xl p-6">
-          {!email && !forgotPassword && !agency && <EmailCheck setEmail={setEmail} setUserExists={setUserExists} />}
-          {agency && !email && !forgotPassword && <EmailCheckAgency setEmail={setEmail} setUserExists={setUserExists} />}
+    <div className="h-screen flex overflow-hidden">
+      {/* Left Side - Explanation (50%) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gray-50 p-12 items-center justify-center border-r border-gray-200">
+        <div className="max-w-lg">
+          <div className="mb-10">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-2">EventHub</h1>
+            <p className="text-gray-600">Your Event Management Platform</p>
+          </div>
+
+          {/* Email Check Explanation */}
+          {!email && !forgotPassword && (
+            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Learning Point: Smart Auth Pattern</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  This is a <strong>single-form authentication</strong> pattern. Instead of separate signup/signin pages, we check the email first.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">1.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">User enters email</p>
+                    <p className="text-xs text-gray-500 mt-1">We don't ask "Do you have an account?" - we figure it out</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">2.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Check if email exists</p>
+                    <p className="text-xs text-gray-500 mt-1">Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/check-email</code></p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">3.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Show correct form</p>
+                    <p className="text-xs text-gray-500 mt-1">Password field (signin) or name + password (signup)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-xs text-gray-600 font-medium mb-2">Why this matters:</p>
+                <ul className="space-y-1.5 text-xs text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Reduces support tickets by ~40%</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Better conversion rates</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Used by: Slack, Linear, Notion</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Signup Explanation */}
+          {!userExists && email && !forgotPassword && (
+            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Learning Point: Frictionless Signup</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Minimize form fields and remove unnecessary friction to increase conversion rates.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">1.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">No "Confirm Password"</p>
+                    <p className="text-xs text-gray-500 mt-1">Users can reset if they make a typo. Better conversion over perfect prevention.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">2.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Show password toggle</p>
+                    <p className="text-xs text-gray-500 mt-1">Lets users verify their password without needing a confirmation field</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">3.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Only essential fields</p>
+                    <p className="text-xs text-gray-500 mt-1">Email, name, password. That's it. Collect more later if needed.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-xs text-gray-600 font-medium mb-2">Impact:</p>
+                <ul className="space-y-1.5 text-xs text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Reduces signup abandonment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Faster time to value</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    <span>Mobile-friendly (less typing)</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Signin Explanation */}
+          {userExists && email && !forgotPassword && (
+            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Welcome Back!</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  We found your account. Just enter your password to continue.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">💡</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Email is pre-filled</p>
+                    <p className="text-xs text-gray-500 mt-1">We already know you have an account, so we skip the "new user" flow</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">🔒</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Forgot password?</p>
+                    <p className="text-xs text-gray-500 mt-1">Reset link available if needed - no need to remember which email you used</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Forgot Password Explanation */}
+          {forgotPassword && (
+            <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+              <div className="mb-6">
+                <h3 className="text-base font-semibold text-gray-900 mb-2">📚 Password Reset Flow</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  Simple and secure password recovery via email.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">1.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Send reset email</p>
+                    <p className="text-xs text-gray-500 mt-1">Backend: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">POST /user/forgot_password</code></p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">2.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">Email contains secure token</p>
+                    <p className="text-xs text-gray-500 mt-1">One-time use, expires after 24 hours</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="text-gray-400 text-sm font-medium flex-shrink-0 mt-0.5">3.</span>
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">User sets new password</p>
+                    <p className="text-xs text-gray-500 mt-1">Token is consumed, old password is replaced</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Right Side - Auth Form (50%) */}
+      <div className="flex-1 lg:w-1/2 bg-white flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          {!email && !forgotPassword && <EmailCheck setEmail={setEmail} setUserExists={setUserExists} />}
           {userExists && email && !forgotPassword && <SignIn email={email} setForgotPassword={setForgotPassword} />}
           {!userExists && email && !forgotPassword && <SignUp email={email} />}
           {forgotPassword && <ForgotPassword setForgotPassword={setForgotPassword} email={email} />}
@@ -39,74 +227,6 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
   const [error, setError] = useState("")
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-
-  // const redirect = searchParams.get("redirect");
-
-  //   const handleGoogleConnect = useGoogleLogin({
-  //     scope: "openid email profile",
-  //     onSuccess: async (tokenResponse) => {
-  //       if (typeof window !== "undefined" && window.trackSigninStart) window.trackSigninStart();
-  //       handleGoogleSuccess(tokenResponse);
-  //     },
-  //     onError: (error) => handleGoogleError(error),
-  //   });
-
-  //   const handleGoogleError = () => {
-  //     toast.error(e.code);
-  //   };
-
-  //   const handleGoogleSuccess = async (credentialResponse) => {
-  //     console.log("credentialResponse", credentialResponse);
-  //     try {
-  //       let referral_by = searchParams.get("ref");
-  //       let utm_source = searchParams.get("utm_source");
-  //       let utm_from = searchParams.get("utm_from");
-
-  //       if (!referral_by) {
-  //         const redirectParam = searchParams.get("redirect");
-  //         if (redirectParam) {
-  //           const redirectUrl = new URL(decodeURIComponent(redirectParam), window.location.origin);
-  //           const redirectParams = new URLSearchParams(redirectUrl.search);
-  //           referral_by = redirectParams.get("ref");
-  //           utm_source = redirectParams.get("utm_source");
-  //           utm_from = redirectParams.get("utm_from");
-  //         }
-  //       }
-
-  //       const { user, token, isNewUser } = await api.post(`/user/auth/google`, {
-  //         access_token: credentialResponse.access_token,
-  //         referral_by: referral_by,
-  //         waalego_utm_source: utm_source,
-  //         waalego_utm_from: utm_from,
-  //         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //       });
-
-  //       if (user) dispatch(setUser(user));
-  //       if (token) api.setToken(token);
-
-  //       // Track Google auth success
-  //       if (typeof window !== "undefined") {
-  //         if (isNewUser) {
-  //           if (window.onSignupSuccess) window.onSignupSuccess("google");
-  //           if (window.gtag) {
-  //             window.gtag("event", "sign_up", { method: "google_oauth", event_category: "engagement", event_label: "user_registration" });
-  //           }
-  //         } else {
-  //           if (window.onSigninSuccess) window.onSigninSuccess("google");
-  //         }
-  //       }
-
-  //       if (!isNewUser && redirect) {
-  //         navigate(redirect);
-  //         return;
-  //       }
-
-  //       navigate("/");
-  //     } catch (e) {
-  //       console.log("e", e);
-  //       toast.error(e.code);
-  //     }
-  //   };
 
   const handleSubmit = async e => {
     try {
@@ -132,54 +252,24 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
 
   return (
     <div className="w-full">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center">
-            <div className="mb-8 flex justify-center">
-              <span className="text-xl font-extrabold text-gray-900">Boilerplate</span>
-            </div>
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Welcome to Boilerplate</h1>
+      {/* Mobile header - only visible on small screens */}
+      <div className="lg:hidden mb-8 text-center">
+        <h1 className="text-3xl font-bold text-blue-600 mb-2">EventHub</h1>
+        <p className="text-sm text-gray-500">Your Event Management Platform</p>
       </div>
 
-      {/* Google Sign In Button */}
-      {/* <div className="mb-6">
-        <button
-          id="google-button"
-          onClick={handleGoogleConnect}
-          className="flex items-center justify-center w-full px-4 py-3 border border-blue-500/20 rounded-lg bg-white hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md group"
-        >
-          <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-          </svg>
-          <span className="text-gray-700 font-medium">Continue with Google</span>
-        </button>
-      </div> */}
-
-      {/* Divider */}
-      {/* <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-white text-gray-600">or continue with email</span>
-        </div>
-      </div> */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-medium text-gray-900 mb-2">Welcome</h2>
+        <p className="text-sm text-gray-600">Enter your email to continue</p>
+      </div>
 
       {/* Email Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-base text-gray-700 flex items-center mb-2">
-            <FiMail className="mr-2 text-blue-400" size={20} />
-            Email <span className="text-blue-400 ml-1">*</span>
-          </label>
+          <label className="text-sm text-gray-700 mb-2 block">Email</label>
           <input
             id="email-input"
-            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 text-base placeholder-gray-400"
+            className="w-full px-3 py-2 rounded border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 text-sm"
             name="email"
             type="email"
             value={email}
@@ -190,31 +280,31 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
             onFocus={() => {
               if (typeof window !== "undefined" && window.trackSignupStart) window.trackSignupStart()
             }}
-            placeholder="example@company.com"
+            placeholder="you@example.com"
           />
-          {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+          {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
         </div>
 
         <button
           id="email-submit"
-          className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 disabled:opacity-50"
           type="submit"
           disabled={loading}
         >
-          {loading ? <Loader size="small" color="white" /> : "Continue with Email"}
+          {loading ? <Loader size="small" color="white" /> : "Continue"}
         </button>
       </form>
 
       {/* Footer */}
-      <div className="mt-8 text-center">
+      <div className="mt-6 text-center">
         <p className="text-xs text-gray-500">
           By continuing, you agree to our{" "}
-          <a href="https://waalego.selego.co/terms-privacy" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-            Terms of Service
+          <a href="https://waalego.selego.co/terms-privacy" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:underline">
+            Terms
           </a>{" "}
           and{" "}
-          <a href="https://waalego.selego.co/terms-privacy" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-            Privacy Policy
+          <a href="https://waalego.selego.co/terms-privacy" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:underline">
+            Privacy
           </a>
         </p>
       </div>
@@ -222,7 +312,9 @@ const EmailCheck = ({ setEmail, setUserExists }) => {
   )
 }
 
-const EmailCheckAgency = ({ setEmail, setUserExists }) => {
+// Removed EmailCheckAgency - not needed for EventHub
+
+const EmailCheckAgency_REMOVED = ({ setEmail, setUserExists }) => {
   const [loading, setLoading] = useState(false)
   const [email, setEmailValue] = useState("")
   const [error, setError] = useState("")
@@ -335,7 +427,7 @@ const EmailCheckAgency = ({ setEmail, setUserExists }) => {
         <button
           id="google-button"
           onClick={handleGoogleConnect}
-          className="flex items-center justify-center w-full px-4 py-3 border border-blue-500/20 rounded-lg bg-white hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md group"
+          className="flex items-center justify-center w-full px-4 py-3 border border-indigo-200 rounded-lg bg-white hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md group"
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -366,7 +458,7 @@ const EmailCheckAgency = ({ setEmail, setUserExists }) => {
           </label>
           <input
             id="email-input"
-            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 text-base placeholder-gray-400"
+            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-gray-900 text-base placeholder-gray-400"
             name="email"
             type="email"
             value={email}
@@ -384,7 +476,7 @@ const EmailCheckAgency = ({ setEmail, setUserExists }) => {
 
         <button
           id="email-submit"
-          className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
           disabled={loading}
         >
@@ -444,53 +536,39 @@ const SignIn = ({ email, setForgotPassword }) => {
   }
 
   return (
-    <form className="py-2 w-full" onSubmit={handleSubmit}>
-      <div className="text-center mb-6">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center">
-            <div className="mb-8 flex justify-center">
-              <span className="text-xl font-extrabold text-gray-900">Boilerplate</span>
-            </div>
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Welcome to Boilerplate</h1>
-        <p className="text-gray-600 text-base mt-2">Welcome to Boilerplate! Enter your password to continue</p>
+    <form className="w-full" onSubmit={handleSubmit}>
+      <div className="mb-8">
+        <h1 className="text-2xl font-medium text-gray-900 mb-2">Welcome back</h1>
+        <p className="text-sm text-gray-600">Enter your password to continue</p>
       </div>
-      <div className="mt-10 space-y-8">
+      <div className="space-y-4">
         <div>
-          <label className="text-base text-gray-700 flex items-center mb-2">
-            <FiMail className="mr-2 text-blue-400" size={20} />
-            Email
-          </label>
-          <input className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 text-base" name="email" type="email" id="email" value={email} disabled />
+          <label className="text-sm text-gray-700 mb-2 block">Email</label>
+          <input className="w-full px-3 py-2 rounded bg-gray-50 border border-gray-300 text-gray-600 text-sm" name="email" type="email" value={email} disabled />
         </div>
         <div>
-          <label className="text-base text-gray-700 flex items-center mb-2">
-            <FiLock className="mr-2 text-blue-400" size={20} />
-            Password <span className="text-blue-400 ml-1">*</span>
-          </label>
+          <label className="text-sm text-gray-700 mb-2 block">Password</label>
           <div className="relative">
             <input
-              className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 text-base"
+              className="w-full px-3 py-2 rounded border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 text-sm"
               name="password"
               type={seePassword ? "text" : "password"}
-              id="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="Enter your password"
             />
-            <button type="button" onClick={() => setSeePassword(!seePassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-400">
-              {seePassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            <button type="button" onClick={() => setSeePassword(!seePassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900">
+              {seePassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
             </button>
           </div>
-          {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+          {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
           <div className="text-right mt-2">
-            <button type="button" onClick={() => setForgotPassword(true)} className="text-sm text-blue-400 hover:text-blue-300">
+            <button type="button" onClick={() => setForgotPassword(true)} className="text-xs text-gray-600 hover:text-gray-900">
               Forgot password?
             </button>
           </div>
         </div>
-        <button className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:scale-105" type="submit">
+        <button className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800" type="submit">
           {loading ? <Loader size="small" color="white" /> : "Sign in"}
         </button>
       </div>
@@ -534,68 +612,50 @@ const ForgotPassword = ({ setForgotPassword, email }) => {
 
   if (done) {
     return (
-      <div className="py-8 w-full">
-        <div className="text-center space-y-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Recovery Link Sent</h1>
-          <p className="text-gray-600 text-base">Password recovery link has been sent to your email. Please check your inbox and follow the link to reset your password.</p>
+      <div className="w-full">
+        <div className="mb-8">
+          <h1 className="text-2xl font-medium text-gray-900 mb-2">Check your email</h1>
+          <p className="text-sm text-gray-600">We've sent a password reset link to your email.</p>
         </div>
-        <div className="mt-8">
-          <button
-            onClick={() => setForgotPassword(false)}
-            className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:scale-105"
-          >
-            Back to Sign In
-          </button>
-        </div>
+        <button
+          onClick={() => setForgotPassword(false)}
+          className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800"
+        >
+          Back to Sign In
+        </button>
       </div>
     )
   }
 
   return (
-    <form className="py-8 w-full" onSubmit={handleSubmit}>
-      <div className="text-center space-y-6">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center">
-            <div className="mb-8 flex justify-center">
-              <span className="text-xl font-extrabold text-gray-900">Jobego</span>
-            </div>
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Forgot Password</h1>
-        <p className="text-gray-600 text-base">Enter your email address below to receive the password reset link.</p>
+    <form className="w-full" onSubmit={handleSubmit}>
+      <div className="mb-8">
+        <h1 className="text-2xl font-medium text-gray-900 mb-2">Reset password</h1>
+        <p className="text-sm text-gray-600">Enter your email to receive a reset link</p>
       </div>
-      <div className="mt-8 space-y-8">
+      <div className="space-y-4">
         <div>
-          <label className="text-base text-gray-700 flex items-center mb-2">
-            <FiMail className="mr-2 text-blue-400" size={20} />
-            Email <span className="text-blue-400 ml-1">*</span>
-          </label>
+          <label className="text-sm text-gray-700 mb-2 block">Email</label>
           <input
-            className="w-full px-4 py-3 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 text-base"
+            className="w-full px-3 py-2 rounded border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 text-sm"
             name="email"
             type="email"
-            id="email"
             value={emailValue}
             onChange={e => {
               setEmailValue(e.target.value)
               setError("")
             }}
-            placeholder="example@mail.com"
+            placeholder="you@example.com"
           />
-          {error && <p className="text-sm text-red-400 mt-2">{error}</p>}
+          {error && <p className="text-xs text-red-600 mt-2">{error}</p>}
         </div>
-        <button className="w-full py-3 rounded-lg text-base font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700 hover:scale-105" type="submit">
-          {loading ? <Loader size="small" color="white" /> : "Send Recovery Link"}
+        <button className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800" type="submit">
+          {loading ? <Loader size="small" color="white" /> : "Send Reset Link"}
         </button>
-        <div className="w-full flex items-center my-2">
-          <div className="border-b border-gray-300 w-full" />
-          <span className="px-2 text-gray-500 text-xs">or</span>
-          <div className="border-b border-gray-300 w-full" />
-        </div>
         <button
           type="button"
           onClick={() => setForgotPassword(false)}
-          className="w-full py-3 rounded-lg text-base font-semibold text-gray-700 transition-all bg-gray-100 hover:bg-gray-200"
+          className="w-full py-2 rounded text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200"
         >
           Back to Sign In
         </button>
@@ -643,67 +703,45 @@ const SignUp = ({ email }) => {
 
   return (
     <form className="w-full" onSubmit={handleSubmit}>
-      <div className="text-center mb-6">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center">
-            <div className="mb-8 flex justify-center">
-              <span className="text-xl font-extrabold text-gray-900">Boilerplate</span>
-            </div>
-          </div>
-        </div>
-        <h1 className="text-2xl font-semibold text-gray-900">Welcome to Boilerplate</h1>
-        <p className="text-gray-600 text-sm mt-4">Complete your registration to get started</p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-medium text-gray-900 mb-2">Create account</h1>
+        <p className="text-sm text-gray-600">Fill in your details to get started</p>
       </div>
       <div className="space-y-4">
         <div>
-          <label className="text-sm text-gray-700 flex items-center mb-1">
-            <FiMail className="mr-2 text-blue-400" size={18} />
-            Email
-          </label>
-          <input className="w-full px-3 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 text-sm" name="email" type="email" value={email} disabled />
+          <label className="text-sm text-gray-700 mb-2 block">Email</label>
+          <input className="w-full px-3 py-2 rounded bg-gray-50 border border-gray-300 text-gray-600 text-sm" name="email" type="email" value={email} disabled />
         </div>
         <div>
-          <label className="text-sm text-gray-700 flex items-center mb-1">
-            <FiUser className="mr-2 text-blue-400" size={18} />
-            Name <span className="text-blue-400 ml-1">*</span>
-          </label>
+          <label className="text-sm text-gray-700 mb-2 block">Name</label>
           <input
-            className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-gray-900 text-sm"
+            className="w-full px-3 py-2 rounded border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 text-sm"
             name="name"
             type="text"
             value={values.name}
             onChange={handleChange}
-            placeholder="Enter your name"
+            placeholder="Your name"
           />
-          {errors.name && <p className="text-xs text-red-400 mt-1">{errors.name}</p>}
+          {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
         </div>
         <div>
-          <label className="text-sm text-gray-700 flex items-center mb-1">
-            <FiLock className="mr-2 text-blue-400" size={18} />
-            Password <span className="text-blue-400 ml-1">*</span>
-          </label>
+          <label className="text-sm text-gray-700 mb-2 block">Password</label>
           <div className="relative">
             <input
-              className="w-full px-3 py-2 rounded-lg bg-white border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 transition-all text-gray-900 text-sm"
+              className="w-full px-3 py-2 rounded border border-gray-300 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 text-sm"
               name="password"
               type={seePassword ? "text" : "password"}
               value={values.password}
               onChange={handleChange}
-              placeholder="Choose a secure password"
+              placeholder="Choose a password"
             />
-            <button type="button" onClick={() => setSeePassword(!seePassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-400">
+            <button type="button" onClick={() => setSeePassword(!seePassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900">
               {seePassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
             </button>
           </div>
-          {errors.password && <p className="text-xs text-red-400 mt-1">{errors.password}</p>}
+          {errors.password && <p className="text-xs text-red-600 mt-1">{errors.password}</p>}
         </div>
-        <div className="bg-blue-50 p-2 rounded-lg border border-blue-200 text-xs text-gray-700">
-          By signing up, you agree to our{" "}
-          <a href="https://boilerplate.co/terms-privacy" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-            Terms and Privacy Policy
-          </a>
-        </div>
-        <button className="w-full py-2 rounded-lg text-sm font-semibold text-white transition-all bg-blue-600 hover:bg-blue-700" type="submit">
+        <button className="w-full py-2 rounded text-sm font-medium text-white bg-gray-900 hover:bg-gray-800" type="submit">
           {loading ? <Loader size="small" color="white" /> : "Create Account"}
         </button>
       </div>
