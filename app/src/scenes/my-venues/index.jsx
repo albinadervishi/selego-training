@@ -4,53 +4,44 @@ import { AiOutlineCalendar, AiOutlinePlus } from "react-icons/ai"
 import { Menu } from "@headlessui/react"
 import api from "@/services/api"
 import toast from "react-hot-toast"
-import { CreateEventModal } from "@/components/events"
+import { CreateVenueModal } from "@/components/venues"
 
-export default function MyEvents() {
-  const [events, setEvents] = useState([])
+export default function MyVenues() {
+  const [venues, setVenues] = useState([])
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
-    fetchMyEvents()
+    fetchMyVenues()
   }, [])
 
-  const fetchMyEvents = async () => {
+  const fetchMyVenues = async () => {
     try {
       setLoading(true)
-      // Note: This endpoint automatically filters by authenticated user's ID on the backend
-      // It returns ALL user's events (drafts, published, cancelled) unlike the public search
-      const { ok, data } = await api.post("/event/my-events/search", {
+      const { ok, data } = await api.post("/venue/my-venues/search", {
         per_page: 50,
         page: 1
       })
-      if (!ok) throw new Error("Failed to fetch events")
-      setEvents(data || [])
+      if (!ok) throw new Error("Failed to fetch venues")
+      setVenues(data || [])
     } catch (error) {
-      toast.error("Could not load your events")
+      toast.error("Could not load your venues")
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete = async eventId => {
-    // 📚 UX Pattern: window.confirm() vs Custom Modal
-    // For simple yes/no confirmations, the native window.confirm() is perfectly fine.
-    // You don't need a fancy modal for everything! Use modals when you need:
-    // - Multiple inputs (like CreateEventModal)
-    // - Complex content or forms
-    // - Custom styling is critical
-    // But for "Are you sure?" → window.confirm() is faster to implement and users understand it.
-    if (!confirm("Are you sure you want to delete this event?")) return
+  const handleDelete = async venueId => {
+    if (!confirm("Are you sure you want to delete this venue?")) return
 
     try {
-      const { ok } = await api.delete(`/event/${eventId}`)
-      if (!ok) throw new Error("Failed to delete event")
+      const { ok } = await api.delete(`/venue/${venueId}`)
+      if (!ok) throw new Error("Failed to delete venue")
 
-      toast.success("Event deleted successfully")
-      setEvents(events.filter(e => e._id !== eventId))
+      toast.success("Venue deleted successfully")
+      setVenues(venues.filter(v => v._id !== venueId))
     } catch (error) {
-      toast.error("Failed to delete event")
+      toast.error("Failed to delete venue")
       console.error(error)
     }
   }
@@ -72,16 +63,15 @@ export default function MyEvents() {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Events</h1>
-            <p className="text-gray-600 mt-2">Events you've created and organized</p>
+            <h1 className="text-3xl font-bold text-gray-900">My Venues</h1>
+            <p className="text-gray-600 mt-2">Venues you've created</p>
           </div>
           <button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
             <AiOutlinePlus className="w-5 h-5" />
-            Create Event
+            Create Venue
           </button>
         </div>
 
-        {/* Info card */}
         <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
           <div className="flex items-start">
             <div className="flex-shrink-0">
@@ -94,20 +84,13 @@ export default function MyEvents() {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-purple-800">Your Events Dashboard</h3>
+              <h3 className="text-sm font-medium text-purple-800">Your Venues Dashboard</h3>
               <div className="mt-2 text-sm text-purple-700">
                 <p>
-                  This page shows events where you are the <strong>organizer</strong>.
+                  This page shows venues where you are the <strong>owner</strong>.
                 </p>
                 <p className="mt-1">
-                  Data comes from <code className="bg-purple-100 px-1 rounded">POST /event/my-events/search</code>
-                </p>
-                <p className="mt-1">
-                  <strong>Security:</strong> This shows ALL your events (drafts, cancelled, past) but automatically filters by your user ID on the backend - preventing access to
-                  other organizers' unpublished events.
-                </p>
-                <p className="mt-1">
-                  <strong>UX Pattern:</strong> Create via modal (required fields) → Edit page (full details) → Publish
+                  Data comes from <code className="bg-purple-100 px-1 rounded">POST /venue/my-venues/search</code>
                 </p>
               </div>
             </div>
@@ -115,40 +98,39 @@ export default function MyEvents() {
         </div>
       </div>
 
-      {/* Events List */}
-      {events.length === 0 ? (
+      {venues.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg shadow">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
             <AiOutlineCalendar className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No events yet</h3>
-          <p className="text-gray-600 mb-4">Create your first event to get started!</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No venues yet</h3>
+          <p className="text-gray-600 mb-4">Create your first venue to get started!</p>
           <button onClick={() => setShowCreateModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
             <AiOutlinePlus className="w-5 h-5" />
-            Create Your First Event
+            Create Your First Venue
           </button>
         </div>
       ) : (
         <div className="space-y-4">
-          {events.map(event => (
-            <EventRow key={event._id} event={event} onDelete={handleDelete} />
+          {venues.map(venue => (
+            <VenueRow key={venue._id} venue={venue} onDelete={handleDelete} />
           ))}
         </div>
       )}
 
-      {/* Create Event Modal */}
-      <CreateEventModal
+      {/* Create Venue Modal */}
+      <CreateVenueModal
         isOpen={showCreateModal}
         onClose={() => {
           setShowCreateModal(false)
-          fetchMyEvents() // Refresh list
+          fetchMyVenues() // Refresh list
         }}
       />
     </div>
   )
 }
 
-function EventRow({ event, onDelete }) {
+function VenueRow({ venue, onDelete }) {
   const navigate = useNavigate()
 
   const formatDate = date => {
@@ -175,34 +157,26 @@ function EventRow({ event, onDelete }) {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
-            {getStatusBadge(event.status)}
-            <span className="text-sm px-2 py-1 bg-indigo-100 text-indigo-800 rounded">{event.category}</span>
+            <h3 className="text-xl font-semibold text-gray-900">{venue.name}</h3>
           </div>
 
-          <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
-            <div>
-              <span className="font-medium text-gray-700">Date:</span>
-              <p>{formatDate(event.start_date)}</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
             <div>
               <span className="font-medium text-gray-700">Location:</span>
-              <p>{event.city || "Not specified"}</p>
+              <p>
+                {venue.address ?? ""}, {venue.city ?? ""}, {venue.country ?? ""}
+              </p>
             </div>
             <div>
               <span className="font-medium text-gray-700">Capacity:</span>
-              <p>{event.capacity === 0 ? "Unlimited" : `${event.available_spots} / ${event.capacity}`}</p>
+              <p>{venue.capacity}</p>
             </div>
-            <div>
-              <span className="font-medium text-gray-700">Price:</span>
-              <p>{event.price === 0 ? "FREE" : `${event.price} ${event.currency}`}</p>
-            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-sm px-2 py-1 bg-indigo-100 text-indigo-800 rounded">{venue.amenities?.join(", ") || "No amenities"}</span>
           </div>
         </div>
 
-        {/* Three-dot menu */}
         <Menu as="div" className="relative ml-4">
           <Menu.Button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
@@ -214,7 +188,7 @@ function EventRow({ event, onDelete }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <button onClick={() => navigate(`/event/${event._id}`)} className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}>
+                  <button onClick={() => navigate(`/venue/${venue._id}`)} className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}>
                     <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path
@@ -232,7 +206,7 @@ function EventRow({ event, onDelete }) {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => navigate(`/event/${event._id}/edit`)}
+                    onClick={() => navigate(`/venue/${venue._id}/edit`)}
                     className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                   >
                     <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +217,7 @@ function EventRow({ event, onDelete }) {
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                       />
                     </svg>
-                    Edit Event
+                    Edit Venue
                   </button>
                 )}
               </Menu.Item>
@@ -251,7 +225,7 @@ function EventRow({ event, onDelete }) {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => navigate(`/event/${event._id}/attendees`)}
+                    onClick={() => navigate(`/venue/${venue._id}/events`)}
                     className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                   >
                     <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +236,7 @@ function EventRow({ event, onDelete }) {
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                       />
                     </svg>
-                    View Attendees
+                    View Events
                   </button>
                 )}
               </Menu.Item>
@@ -271,7 +245,7 @@ function EventRow({ event, onDelete }) {
 
               <Menu.Item>
                 {({ active }) => (
-                  <button onClick={() => onDelete(event._id)} className={`${active ? "bg-red-50" : ""} flex items-center w-full px-4 py-2 text-sm text-red-600`}>
+                  <button onClick={() => onDelete(venue._id)} className={`${active ? "bg-red-50" : ""} flex items-center w-full px-4 py-2 text-sm text-red-600`}>
                     <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -280,7 +254,7 @@ function EventRow({ event, onDelete }) {
                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                       />
                     </svg>
-                    Delete Event
+                    Delete Venue
                   </button>
                 )}
               </Menu.Item>
