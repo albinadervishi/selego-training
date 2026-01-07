@@ -4,9 +4,11 @@ import { AiOutlineCalendar, AiOutlinePlus } from "react-icons/ai"
 import { Menu } from "@headlessui/react"
 import api from "@/services/api"
 import toast from "react-hot-toast"
-import { CreateVenueModal } from "@/components/venues"
+import CreateVenueModal from "./components/CreateVenueModal"
+import useStore from "@/services/store"
 
 export default function MyVenues() {
+  const { user } = useStore()
   const [venues, setVenues] = useState([])
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -18,7 +20,8 @@ export default function MyVenues() {
   const fetchMyVenues = async () => {
     try {
       setLoading(true)
-      const { ok, data } = await api.post("/venue/my-venues/search", {
+      const { ok, data } = await api.post("/venue/search", {
+        owner_id: user._id,
         per_page: 50,
         page: 1
       })

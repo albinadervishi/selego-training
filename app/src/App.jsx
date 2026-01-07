@@ -11,7 +11,6 @@ import EventView from "@/scenes/events/view"
 import MyEvents from "@/scenes/my-events"
 import MyRegistrations from "@/scenes/my-registrations"
 import Venues from "@/scenes/venues"
-import VenueView from "@/scenes/venues/view"
 import MyVenues from "@/scenes/my-venues"
 
 import Navbar from "@/components/NavBar"
@@ -42,8 +41,7 @@ export default function App() {
           <Route path="/my-registrations" element={<MyRegistrations />} />
           <Route path="/my-venues" element={<MyVenues />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/venues" element={<Venues />} />
-          <Route path="/venue/:id/*" element={<VenueView />} />
+          <Route path="/venues/*" element={<Venues />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

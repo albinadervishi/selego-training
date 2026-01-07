@@ -1,13 +1,12 @@
-import React from "react"
 import { Routes, Route } from "react-router-dom"
-import ListView from "./list"
+import VenuesList from "./list"
+import VenueView from "./view"
 
-export default function Home() {
+export default function Venues() {
   return (
-    <div className="p-8">
-      <Routes>
-        <Route index element={<ListView />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<VenuesList />} />
+      <Route path="/:id/*" element={<VenueView />} />
+    </Routes>
   )
 }

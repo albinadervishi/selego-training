@@ -9,12 +9,17 @@ const { capture } = require("../services/sentry");
 
 /**
  * POST /venue/search - Search venues (PUBLIC)
+ * Can filter by owner_id if provided
  */
 router.post("/search", async (req, res) => {
   try {
-    const { search, city, sort, per_page, page, available_start, available_end } = req.body;
+    const { search, city, owner_id, sort, per_page, page, available_start, available_end } = req.body;
 
     let query = {};
+
+    if (owner_id) {
+      query.owner_id = owner_id;
+    }
 
     if (search) {
       const searchValue = search.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");
@@ -93,8 +98,8 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
   try {
     const { name, address, city, country, capacity, amenities, image_url } = req.body;
 
-    if (!name || !address || !city) {
-      return res.status(400).send({ ok: false, code: "NAME_AND_ADDRESS_AND_CITY_REQUIRED" });
+    if (!name) {
+      return res.status(400).send({ ok: false, code: "MISSING_REQUIRED_FIELDS" });
     }
 
     const venue = await VenueObject.create({
@@ -105,55 +110,11 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
       capacity,
       amenities,
       image_url,
-      owner_id: req.user._id,
+      owner_id: req.user._id.toString(),
       owner_name: req.user.name,
     });
 
     return res.status(201).send({ ok: true, data: venue });
-  } catch (error) {
-    capture(error);
-    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
-  }
-});
-
-/**
- * POST /venue/my-venues/search - Search my venues (USER)
- */
-router.post("/my-venues/search", passport.authenticate(["user", "admin"], { session: false }), async (req, res) => {
-  try {
-    const { search, city, sort, per_page, page } = req.body;
-
-    let query = {};
-    if (req.user.role === "user") {
-      query.owner_id = req.user._id;
-    }
-
-    if (search) {
-      const searchValue = search.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");
-      query = {
-        ...query,
-        $or: [
-          { name: { $regex: searchValue, $options: "i" } },
-          { address: { $regex: searchValue, $options: "i" } },
-          { city: { $regex: searchValue, $options: "i" } },
-          { country: { $regex: searchValue, $options: "i" } },
-        ],
-      };
-    }
-
-    if (city) query.city = { $regex: city, $options: "i" };
-
-    const limit = per_page || 10;
-    const offset = page ? (page - 1) * limit : 0;
-
-    const data = await VenueObject.find(query)
-      .skip(offset)
-      .limit(limit)
-      .sort(sort || { created_at: -1 });
-
-    const total = await VenueObject.countDocuments(query);
-
-    return res.status(200).send({ ok: true, data, total });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
