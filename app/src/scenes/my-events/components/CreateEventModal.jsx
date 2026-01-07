@@ -8,17 +8,17 @@ export default function CreateEventModal({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
-    start_date: "",
+    start_date: ""
   })
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    
+
     if (!formData.title || !formData.start_date) {
       toast.error("Title and start date are required")
       return
@@ -28,10 +28,10 @@ export default function CreateEventModal({ isOpen, onClose }) {
       setLoading(true)
       const { ok, data } = await api.post("/event", {
         ...formData,
-        status: "draft", // Always create as draft
+        status: "draft" // Always create as draft
       })
       if (!ok) throw new Error("Failed to create event")
-      
+
       toast.success("Event created! Add more details to publish it.")
       onClose()
       // Redirect to edit page
@@ -50,10 +50,7 @@ export default function CreateEventModal({ isOpen, onClose }) {
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {/* Background overlay */}
-        <div 
-          className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" 
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose} />
 
         {/* Modal panel */}
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
@@ -61,12 +58,8 @@ export default function CreateEventModal({ isOpen, onClose }) {
             <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
                 <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                    Create New Event
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Start with the basics. You'll add full details on the next page.
-                  </p>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Create New Event</h3>
+                  <p className="text-sm text-gray-600 mb-4">Start with the basics. You'll add full details on the next page.</p>
 
                   <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
                     <strong>Two-step creation:</strong> Modal (required fields only) → Edit page (full details + publish)
@@ -102,7 +95,6 @@ export default function CreateEventModal({ isOpen, onClose }) {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -130,4 +122,3 @@ export default function CreateEventModal({ isOpen, onClose }) {
     </div>
   )
 }
-

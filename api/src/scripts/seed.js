@@ -1,3 +1,4 @@
+/* eslint-env node */
 require("dotenv").config();
 const mongoose = require("mongoose");
 const { MONGODB_ENDPOINT } = require("../config");
@@ -5,6 +6,7 @@ const { MONGODB_ENDPOINT } = require("../config");
 const UserObject = require("../models/user");
 const AdminObject = require("../models/admin");
 const EventObject = require("../models/event");
+const VenueObject = require("../models/venue");
 
 async function seed() {
   try {
@@ -18,6 +20,7 @@ async function seed() {
     await UserObject.deleteMany({});
     await AdminObject.deleteMany({});
     await EventObject.deleteMany({});
+    await VenueObject.deleteMany({});
     console.log("🗑️  Cleared existing data");
 
     // Create test users
@@ -52,18 +55,64 @@ async function seed() {
     });
     console.log("✅ Created admin user");
 
+    const venues = await VenueObject.create([
+      {
+        name: "Convention Center Paris",
+        address: "123 Main Street",
+        city: "Paris",
+        country: "France",
+        capacity: 500,
+        amenities: ["WiFi", "Projector", "Catering", "Parking"],
+        image_url: "",
+        owner_id: users[0]._id,
+        owner_name: users[0].name,
+      },
+      {
+        name: "Tech Hub Lyon",
+        address: "456 Innovation Ave",
+        city: "Lyon",
+        country: "France",
+        capacity: 50,
+        amenities: ["WiFi", "Projector", "Whiteboard"],
+        owner_id: users[1]._id,
+        owner_name: users[1].name,
+      },
+      {
+        name: "The Startup Loft",
+        address: "789 Startup Lane",
+        city: "Marseille",
+        country: "France",
+        capacity: 100,
+        amenities: ["WiFi", "Bar", "Outdoor Terrace"],
+        owner_id: users[0]._id,
+        owner_name: users[0].name,
+      },
+      {
+        name: "University Auditorium",
+        address: "321 Academic Way",
+        city: "Toulouse",
+        country: "France",
+        capacity: 300,
+        amenities: ["WiFi", "Projector", "Microphone", "Recording"],
+        owner_id: users[2]._id,
+        owner_name: users[2].name,
+      },
+    ]);
+    console.log(`✅ Created ${venues.length} venues`);
+
     // Create sample events
     const events = await EventObject.create([
       {
         title: "Tech Conference 2026",
         description: "Annual technology conference featuring the latest innovations in AI, Web3, and Cloud Computing.",
-        start_date: new Date("2026-03-15T09:00:00"),
-        end_date: new Date("2026-03-15T18:00:00"),
+        start_date: new Date("2026-01-15T09:00:00"),
+        end_date: new Date("2026-01-15T18:00:00"),
         venue: "Convention Center",
         address: "123 Main Street",
         city: "Paris",
         country: "France",
         capacity: 500,
+        venue_id: venues[0]._id,
         available_spots: 500,
         price: 0,
         currency: "EUR",
@@ -96,7 +145,8 @@ async function seed() {
       },
       {
         title: "Startup Networking Night",
-        description: "Meet fellow entrepreneurs, investors, and startup enthusiasts in a casual networking environment.",
+        description:
+          "Meet fellow entrepreneurs, investors, and startup enthusiasts in a casual networking environment.",
         start_date: new Date("2026-02-01T19:00:00"),
         end_date: new Date("2026-02-01T22:00:00"),
         venue: "The Hub",
@@ -220,4 +270,3 @@ async function seed() {
 }
 
 seed();
-

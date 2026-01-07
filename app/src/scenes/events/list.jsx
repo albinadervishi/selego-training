@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { AiOutlineCalendar } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
-import EventCard from "@/components/events/EventCard"
+import { EventCard } from "@/components/events"
 
 export default function ListView() {
   const [events, setEvents] = useState([])

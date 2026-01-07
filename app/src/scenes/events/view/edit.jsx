@@ -7,21 +7,31 @@ export default function EditTab({ event, fetchEvent }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
+  const [venues, setVenues] = useState([])
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     start_date: "",
     end_date: "",
-    venue: "",
-    address: "",
-    city: "",
-    country: "France",
-    capacity: 0,
+    venue_id: "",
     price: 0,
     currency: "EUR",
     category: "other",
     status: "draft"
   })
+
+  useEffect(() => {
+    fetchVenues()
+  }, [])
+
+  const fetchVenues = async () => {
+    try {
+      const { ok, data } = await api.post("/venue/search", { per_page: 100 })
+      if (ok) setVenues(data || [])
+    } catch (error) {
+      console.error("Failed to fetch venues", error)
+    }
+  }
 
   useEffect(() => {
     if (event) {
@@ -30,11 +40,7 @@ export default function EditTab({ event, fetchEvent }) {
         description: event.description || "",
         start_date: event.start_date ? new Date(event.start_date).toISOString().slice(0, 16) : "",
         end_date: event.end_date ? new Date(event.end_date).toISOString().slice(0, 16) : "",
-        venue: event.venue || "",
-        address: event.address || "",
-        city: event.city || "",
-        country: event.country || "France",
-        capacity: event.capacity || 0,
+        venue: event.venue_id || "",
         price: event.price || 0,
         currency: event.currency || "EUR",
         category: event.category || "other",
@@ -58,8 +64,15 @@ export default function EditTab({ event, fetchEvent }) {
 
     try {
       setSaving(true)
-      const { ok } = await api.put(`/event/${id}`, formData)
-      if (!ok) throw new Error("Failed to update event")
+      const { ok, code } = await api.put(`/event/${id}`, formData)
+
+      if (!ok) {
+        if (code === "VENUE_NOT_AVAILABLE") {
+          toast.error("This venue is not available on the selected date/time")
+          return
+        }
+        throw new Error("Failed to update event")
+      }
 
       toast.success("Event updated successfully!")
       await fetchEvent() // Refresh the parent event data
@@ -223,76 +236,29 @@ export default function EditTab({ event, fetchEvent }) {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Venue Name</label>
-              <input
-                type="text"
-                name="venue"
-                value={formData.venue}
+              <label className="block text-sm font-medium text-gray-700 mb-1">Select Venue</label>
+              <select
+                name="venue_id"
+                value={formData.venue_id}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="e.g., Convention Center"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="e.g., 123 Main Street"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="e.g., Paris"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
+              >
+                <option value="">-- Select a venue --</option>
+                {venues.map(venue => (
+                  <option key={venue._id} value={venue._id}>
+                    {venue.name} - {venue.city}, {venue.country}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Capacity & Pricing */}
+        {/* Pricing */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Capacity & Pricing</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Pricing</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Capacity
-                <span className="text-gray-500 text-xs ml-2">(0 = unlimited)</span>
-              </label>
-              <input
-                type="number"
-                name="capacity"
-                min="0"
-                value={formData.capacity}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Price
