@@ -13,6 +13,10 @@ const S3_SECRETACCESSKEY = process.env.S3_SECRETACCESSKEY || "";
 
 const BREVO_KEY = process.env.BREVO_KEY || "";
 
+const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL || "";
+const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY || "";
+const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
+
 const CONFIG = {
   ENVIRONMENT,
   PORT,
@@ -25,6 +29,9 @@ const CONFIG = {
   S3_ACCESSKEYID,
   S3_SECRETACCESSKEY,
   BREVO_KEY,
+  GOOGLE_CLIENT_EMAIL,
+  GOOGLE_PRIVATE_KEY,
+  GOOGLE_CALENDAR_ID,
 };
 
 if (ENVIRONMENT === "development") console.log(CONFIG);
