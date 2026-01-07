@@ -109,7 +109,7 @@ class api {
         })
 
         const res = await response.json()
-        if (response.status !== 200) {
+        if (response.status !== 200 && response.status !== 201) {
           return reject(res)
         }
         resolve(res)

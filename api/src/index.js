@@ -13,17 +13,19 @@ initSentry(app);
 
 if (ENVIRONMENT === "development") {
   // Filter out socket.io requests from logs (not used in this project)
-  app.use(morgan("tiny", {
-    skip: (req, res) => req.url.includes("/socket.io")
-  }));
+  app.use(
+    morgan("tiny", {
+      skip: (req, res) => req.url.includes("/socket.io"),
+    }),
+  );
 }
 
 require("./services/mongo");
 
 app.use(cors({ credentials: true, origin: [APP_URL, ADMIN_URL] }));
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
 const lastDeployedAt = new Date();
 app.get("/", async (req, res) => {
@@ -40,6 +42,8 @@ app.use("/file", require("./controllers/file"));
 app.use("/event", require("./controllers/event"));
 app.use("/attendee", require("./controllers/attendee"));
 app.use("/dummy", require("./controllers/dummy_controller"));
+app.use("/venue", require("./controllers/venue"));
+app.use("/file", require("./controllers/file_upload"));
 
 setupErrorHandler(app);
 require("./services/passport")(app);
