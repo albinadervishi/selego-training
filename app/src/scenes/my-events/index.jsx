@@ -4,7 +4,7 @@ import { AiOutlineCalendar, AiOutlinePlus } from "react-icons/ai"
 import { Menu } from "@headlessui/react"
 import api from "@/services/api"
 import toast from "react-hot-toast"
-import { CreateEventModal } from "@/components/events"
+import CreateEventModal from "./components/CreateEventModal"
 
 export default function MyEvents() {
   const [events, setEvents] = useState([])

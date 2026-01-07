@@ -13,11 +13,11 @@ const Schema = new mongoose.Schema(
     end_date: { type: Date },
 
     // Location
-    venue: { type: String, trim: true },
+    venue_name: { type: String, trim: true },
     address: { type: String, trim: true },
     city: { type: String, trim: true },
     country: { type: String, trim: true },
-    venue_id: { type: mongoose.Schema.Types.ObjectId, ref: "venue" },
+    venue_id: { type: String },
 
     // Capacity
     capacity: { type: Number, default: 0 },

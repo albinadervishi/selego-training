@@ -41,12 +41,16 @@ const { capture } = require("../services/sentry");
  */
 router.post("/search", async (req, res) => {
   try {
-    const { search, category, city, sort, per_page, page } = req.body;
+    const { search, category, city, venue_id, sort, per_page, page } = req.body;
 
     // 📚 Base query: Only show published events in the future
     // This is a security measure - drafts and cancelled events are private
 
     let query = { status: "published", start_date: { $gte: new Date() } };
+
+    if (venue_id) {
+      query.venue_id = venue_id;
+    }
 
     if (search) {
       // 📚 WHY escape regex characters?
@@ -295,7 +299,6 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
     const updates = req.body;
 
     if (updates.venue_id) {
-      const VenueObject = require("../models/venue");
       const venue = await VenueObject.findById(updates.venue_id);
 
       if (venue) {
