@@ -14,7 +14,11 @@ export default function EventsTab({ venueId }) {
 
   const fetchEvents = async () => {
     try {
-      const { ok, data } = await api.get(`/venue/${venueId}/events`)
+      const { ok, data } = await api.post("/event/search", {
+        venue_id: venueId,
+        per_page: 10,
+        page: 1
+      })
       if (!ok) throw new Error("Failed to fetch events")
       setEvents(data)
     } catch (error) {

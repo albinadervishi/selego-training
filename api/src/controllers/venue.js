@@ -172,35 +172,4 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
   }
 });
 
-/**
- * GET /venue/:id/events - Get all upcoming events at this venue (PUBLIC)
- */
-router.get("/:id/events", async (req, res) => {
-  try {
-    const venue = await VenueObject.findById(req.params.id);
-    if (!venue) {
-      return res.status(404).send({ ok: false, code: ERROR_CODES.NOT_FOUND });
-    }
-
-    const { per_page = 10, page = 1 } = req.query;
-    const limit = parseInt(per_page);
-    const offset = (parseInt(page) - 1) * limit;
-
-    let query = {
-      venue_id: req.params.id,
-      status: "published",
-      start_date: { $gte: new Date() },
-    };
-
-    const data = await EventObject.find(query).skip(offset).limit(limit).sort({ start_date: 1 });
-
-    const total = await EventObject.countDocuments(query);
-
-    return res.status(200).send({ ok: true, data, total });
-  } catch (error) {
-    capture(error);
-    res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
-  }
-});
-
 module.exports = router;
