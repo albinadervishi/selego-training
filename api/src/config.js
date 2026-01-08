@@ -17,6 +17,9 @@ const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
 
 const BREVO_KEY = process.env.BREVO_KEY || "";
 
+const CRON_SECRET = process.env.CRON_SECRET || "";
+const API_URL = process.env.API_URL || "";
+
 const CONFIG = {
   ENVIRONMENT,
   PORT,
@@ -32,6 +35,8 @@ const CONFIG = {
   GOOGLE_CLIENT_EMAIL,
   GOOGLE_PRIVATE_KEY,
   GOOGLE_CALENDAR_ID,
+  CRON_SECRET,
+  API_URL,
 };
 
 if (ENVIRONMENT === "development") console.log(CONFIG);

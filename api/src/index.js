@@ -44,6 +44,7 @@ app.use("/attendee", require("./controllers/attendee"));
 app.use("/dummy", require("./controllers/dummy_controller"));
 app.use("/venue", require("./controllers/venue"));
 app.use("/file", require("./controllers/file_upload"));
+app.use("/webhook", require("./controllers/webhook"));
 
 setupErrorHandler(app);
 require("./services/passport")(app);

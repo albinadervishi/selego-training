@@ -7,6 +7,7 @@ const VenueObject = require("../models/venue");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
 const { exportEvent, updateEvent, deleteEvent } = require("../controllers/googleCalendar");
+const { notifyEventChange } = require("../services/emailNotification");
 
 /**
  * 📚 LEARNING NOTE: Controller Organization & Role-Based Access
@@ -209,6 +210,7 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
         event.google_calendar_id = gcResult.googleEventId;
         await event.save();
       }
+      await notifyEventChange(event, "published");
     }
 
     // 📚 201 = Created (new resource was created successfully)
@@ -363,10 +365,12 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
           await event.save();
         }
       }
+      await notifyEventChange(event, "updated");
     } else if (event.status === "cancelled" && event.google_calendar_id) {
       await deleteEvent(event.google_calendar_id);
       event.google_calendar_id = null;
       await event.save();
+      await notifyEventChange(event, "cancelled");
     }
 
     res.status(200).send({ ok: true, data: event });
@@ -400,7 +404,8 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
 
     await EventObject.findByIdAndDelete(req.params.id);
 
-    // 📚 No data to return on successful delete, just ok: true
+    await notifyEventChange(event, "deleted");
+
     res.status(200).send({ ok: true });
   } catch (error) {
     capture(error);
