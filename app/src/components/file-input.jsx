@@ -21,7 +21,11 @@ const FileInput = ({ value, onChange, name, folder }) => {
       </div>
     )
   } else {
-    preview = <img className="" src={value} alt="user.png" />
+    let imageUrl = Array.isArray(value) ? value[0] : value
+    if (typeof imageUrl === "string") {
+      imageUrl = imageUrl.startsWith("http") ? imageUrl : `https://${imageUrl}`
+      preview = <img className="w-full h-full object-cover" src={imageUrl} alt="preview" />
+    }
   }
 
   const handleDeleteFile = async () => {
