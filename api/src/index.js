@@ -21,6 +21,7 @@ if (ENVIRONMENT === "development") {
 }
 
 require("./services/mongo");
+require("./cron/eventReminders").start();
 
 app.use(cors({ credentials: true, origin: [APP_URL, ADMIN_URL] }));
 app.use(cookieParser());

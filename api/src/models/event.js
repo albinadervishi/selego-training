@@ -50,6 +50,7 @@ const Schema = new mongoose.Schema(
     requires_approval: { type: Boolean, default: false },
 
     google_calendar_id: { type: String },
+    reminder_sent: { type: Boolean, default: false },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } },
 );

@@ -138,23 +138,10 @@ async function getChangedEvents(syncToken = null) {
   }
 }
 
-async function stopWatching(channelId, resourceId) {
-  try {
-    await calendar.channels.stop({
-      resource: { id: channelId, resourceId },
-    });
-    return { ok: true };
-  } catch (error) {
-    console.error("Failed to stop watching:", error);
-    return { ok: false, error: error.message };
-  }
-}
-
 module.exports = {
   exportEvent,
   updateEvent,
   deleteEvent,
   watchCalendar,
   getChangedEvents,
-  stopWatching,
 };
