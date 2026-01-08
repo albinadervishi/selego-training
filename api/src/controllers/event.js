@@ -3,8 +3,10 @@ const passport = require("passport");
 const router = express.Router();
 
 const EventObject = require("../models/event");
+const VenueObject = require("../models/venue");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
+const { exportEvent, updateEvent, deleteEvent } = require("../controllers/googleCalendar");
 
 /**
  * 📚 LEARNING NOTE: Controller Organization & Role-Based Access
@@ -40,12 +42,16 @@ const { capture } = require("../services/sentry");
  */
 router.post("/search", async (req, res) => {
   try {
-    const { search, category, city, sort, per_page, page } = req.body;
+    const { search, category, city, venue_id, sort, per_page, page } = req.body;
 
     // 📚 Base query: Only show published events in the future
     // This is a security measure - drafts and cancelled events are private
 
     let query = { status: "published", start_date: { $gte: new Date() } };
+
+    if (venue_id) {
+      query.venue_id = venue_id;
+    }
 
     if (search) {
       // 📚 WHY escape regex characters?
@@ -196,6 +202,15 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
       organizer_email: req.user.email, // Denormalized for faster queries
     });
 
+    if (event.status === "published") {
+      const gcResult = await exportEvent(event);
+
+      if (gcResult.ok) {
+        event.google_calendar_id = gcResult.googleEventId;
+        await event.save();
+      }
+    }
+
     // 📚 201 = Created (new resource was created successfully)
     return res.status(201).send({ ok: true, data: event });
   } catch (error) {
@@ -293,6 +308,38 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
 
     const updates = req.body;
 
+    if (updates.venue_id) {
+      const venue = await VenueObject.findById(updates.venue_id);
+
+      if (venue) {
+        updates.venue = venue.name;
+        updates.address = venue.address;
+        updates.city = venue.city;
+        updates.country = venue.country;
+        updates.capacity = venue.capacity;
+      }
+
+      if (updates.start_date) {
+        const startDate = new Date(updates.start_date);
+        const endDate = updates.end_date ? new Date(updates.end_date) : new Date(startDate.getTime() + 3600000);
+
+        const conflictingEvent = await EventObject.findOne({
+          _id: { $ne: req.params.id },
+          venue_id: updates.venue_id,
+          status: { $ne: "cancelled" },
+          $or: [
+            { start_date: { $gte: startDate, $lt: endDate } },
+            { end_date: { $gt: startDate, $lte: endDate } },
+            { start_date: { $lte: startDate }, end_date: { $gte: endDate } },
+          ],
+        });
+
+        if (conflictingEvent) {
+          return res.status(400).send({ ok: false, code: "VENUE_NOT_AVAILABLE" });
+        }
+      }
+    }
+
     // 📚 Business logic: Recalculate available spots when capacity changes
     // If event had 100 capacity, 30 booked (70 available)
     // And we change capacity to 80
@@ -305,6 +352,22 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
     // 📚 .set() updates the document, .save() persists to DB
     event.set(updates);
     await event.save();
+
+    if (event.status === "published") {
+      if (event.google_calendar_id) {
+        await updateEvent(event.google_calendar_id, event);
+      } else {
+        const gcResult = await exportEvent(event);
+        if (gcResult.ok) {
+          event.google_calendar_id = gcResult.googleEventId;
+          await event.save();
+        }
+      }
+    } else if (event.status === "cancelled" && event.google_calendar_id) {
+      await deleteEvent(event.google_calendar_id);
+      event.google_calendar_id = null;
+      await event.save();
+    }
 
     res.status(200).send({ ok: true, data: event });
   } catch (error) {
@@ -329,6 +392,10 @@ router.delete("/:id", passport.authenticate(["user", "admin"], { session: false 
 
     if (!isOwner && !isAdmin) {
       return res.status(403).send({ ok: false, code: "FORBIDDEN" });
+    }
+
+    if (event.google_calendar_id) {
+      await deleteEvent(event.google_calendar_id);
     }
 
     await EventObject.findByIdAndDelete(req.params.id);
