@@ -35,7 +35,8 @@ export default function OverviewTab({ event }) {
           <div>
             <div className="text-sm font-medium text-gray-500">Location</div>
             <div className="text-sm text-gray-900 mt-1">
-              {event.venue && `${event.venue}, `}
+              {event.venue_name && `${event.venue_name}, `}
+              {event.address && `${event.address}, `}
               {event.city}
               {event.country && `, ${event.country}`}
             </div>

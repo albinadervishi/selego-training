@@ -114,7 +114,7 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
       owner_name: req.user.name,
     });
 
-    return res.status(201).send({ ok: true, data: venue });
+    return res.status(200).send({ ok: true, data: venue });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
