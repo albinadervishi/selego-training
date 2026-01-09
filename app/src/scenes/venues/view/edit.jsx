@@ -4,7 +4,7 @@ import api from "@/services/api"
 import toast from "react-hot-toast"
 import FileInput from "@/components/file-input"
 
-export default function EditTab({ venue, fetchVenue }) {
+export default function EditTab({ venue, setVenue }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
@@ -47,11 +47,11 @@ export default function EditTab({ venue, fetchVenue }) {
 
     try {
       setSaving(true)
-      const { ok } = await api.put(`/venue/${id}`, formData)
+      const { ok, data } = await api.put(`/venue/${id}`, formData)
       if (!ok) throw new Error("Failed to update venue")
 
       toast.success("Venue updated successfully!")
-      await fetchVenue()
+      setVenue(data)
       navigate(`/venue/${id}`)
     } catch (error) {
       toast.error(error.message || "Failed to update venue")
@@ -63,36 +63,6 @@ export default function EditTab({ venue, fetchVenue }) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">Two-Step Creation Pattern</h3>
-              <div className="mt-2 text-sm text-green-700">
-                <p>
-                  Common UX pattern: <strong>quick create → detailed edit → publish</strong>
-                </p>
-                <p className="mt-1">
-                  Updates use <code className="bg-green-100 px-1 rounded">PUT /venue/:id</code>
-                </p>
-                <p className="mt-1">
-                  Fill in optional details, then click <strong>Publish Event</strong> to make it visible.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Basic Information</h2>

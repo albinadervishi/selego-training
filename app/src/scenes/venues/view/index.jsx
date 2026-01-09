@@ -77,7 +77,7 @@ export default function VenueView() {
       {/* Content */}
       <Routes>
         <Route index element={<OverviewTab venue={venue} />} />
-        <Route path="edit" element={<EditTab venue={venue} fetchVenue={fetchVenue} />} />
+        <Route path="edit" element={<EditTab venue={venue} fetchVenue={fetchVenue} setVenue={setVenue} />} />
         <Route path="events" element={<EventsTab venueId={id} />} />
         <Route path="raw" element={<RawView venue={venue} />} />
       </Routes>
