@@ -3,6 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 
 const EventObject = require("../models/event");
+const VenueObject = require("../models/venue");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
 
@@ -40,12 +41,16 @@ const { capture } = require("../services/sentry");
  */
 router.post("/search", async (req, res) => {
   try {
-    const { search, category, city, sort, per_page, page } = req.body;
+    const { search, category, city, venue_id, sort, per_page, page } = req.body;
 
     // 📚 Base query: Only show published events in the future
     // This is a security measure - drafts and cancelled events are private
 
     let query = { status: "published", start_date: { $gte: new Date() } };
+
+    if (venue_id) {
+      query.venue_id = venue_id;
+    }
 
     if (search) {
       // 📚 WHY escape regex characters?
@@ -197,7 +202,7 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
     });
 
     // 📚 201 = Created (new resource was created successfully)
-    return res.status(201).send({ ok: true, data: event });
+    return res.status(200).send({ ok: true, data: event });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
@@ -292,6 +297,38 @@ router.put("/:id", passport.authenticate(["user", "admin"], { session: false }),
     }
 
     const updates = req.body;
+
+    if (updates.venue_id) {
+      const venue = await VenueObject.findById(updates.venue_id);
+
+      if (venue) {
+        updates.venue = venue.name;
+        updates.address = venue.address;
+        updates.city = venue.city;
+        updates.country = venue.country;
+        updates.capacity = venue.capacity;
+      }
+
+      if (updates.start_date) {
+        const startDate = new Date(updates.start_date);
+        const endDate = updates.end_date ? new Date(updates.end_date) : new Date(startDate.getTime() + 3600000);
+
+        const conflictingEvent = await EventObject.findOne({
+          _id: { $ne: req.params.id },
+          venue_id: updates.venue_id,
+          status: { $ne: "cancelled" },
+          $or: [
+            { start_date: { $gte: startDate, $lt: endDate } },
+            { end_date: { $gt: startDate, $lte: endDate } },
+            { start_date: { $lte: startDate }, end_date: { $gte: endDate } },
+          ],
+        });
+
+        if (conflictingEvent) {
+          return res.status(400).send({ ok: false, code: "VENUE_NOT_AVAILABLE" });
+        }
+      }
+    }
 
     // 📚 Business logic: Recalculate available spots when capacity changes
     // If event had 100 capacity, 30 booked (70 available)

@@ -23,145 +23,128 @@ export default function Dashboard() {
 
       {/* Collapsible Architecture */}
       <div className="mb-6">
-        <button
-          onClick={() => setShowArchitecture(!showArchitecture)}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
+        <button onClick={() => setShowArchitecture(!showArchitecture)} className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900">
           <span>{showArchitecture ? "▼" : "▶"}</span>
           <span>Current API Architecture (reference)</span>
         </button>
-        
+
         {showArchitecture && (
           <div className="mt-4">
             <div className="grid grid-cols-2 gap-4">
-          {/* Controllers */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-blue-400 font-semibold">controllers/</span>
-              <span className="text-gray-500">HTTP endpoints</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>event.js</span>
-                <span className="text-gray-600 ml-auto">POST /event/*</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>attendee.js</span>
-                <span className="text-gray-600 ml-auto">POST /attendee/*</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>user.js</span>
-                <span className="text-gray-600 ml-auto">POST /user/*</span>
-              </div>
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>webhook.js</span>
-                <span className="text-gray-600 ml-auto">TO BUILD</span>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Frontend → API (HTTP)
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-purple-400 font-semibold">services/</span>
-              <span className="text-gray-500">External APIs</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>googleCalendar.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Export events to Google
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              API → External (Google, Stripe...)
-            </div>
-          </div>
-
-          {/* Crons */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-yellow-400 font-semibold">cron/</span>
-              <span className="text-gray-500">Scheduled jobs</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>eventReminders.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Send reminders 24h before
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Time-triggered (automatic)
-            </div>
-          </div>
-
-          {/* Scripts */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-orange-400 font-semibold">scripts/</span>
-              <span className="text-gray-500">Manual CLI</span>
-            </div>
-            <div className="space-y-2 text-gray-300">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400">✓</span>
-                <span>seed.js</span>
-                <span className="text-gray-600 ml-auto text-xs">npm run seed</span>
-              </div>
-              <div className="flex items-center gap-2 opacity-40">
-                <span className="text-gray-600">○</span>
-                <span>cleanupBadEvents.js</span>
-              </div>
-              <div className="pl-6 text-gray-600 text-xs">
-                Delete events with 'not-good'
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">
-              Manual command (npm run)
-            </div>
-          </div>
-
-          {/* Models */}
-          <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs col-span-2">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-emerald-400 font-semibold">models/</span>
-              <span className="text-gray-500">MongoDB schemas</span>
-            </div>
-            <div className="grid grid-cols-3 gap-4 text-gray-300">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>user.js</span>
+              {/* Controllers */}
+              <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-blue-400 font-semibold">controllers/</span>
+                  <span className="text-gray-500">HTTP endpoints</span>
                 </div>
-                <div className="pl-6 text-gray-600 text-xs">name, email, password</div>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>event.js</span>
+                <div className="space-y-2 text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span>event.js</span>
+                    <span className="text-gray-600 ml-auto">POST /event/*</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span>attendee.js</span>
+                    <span className="text-gray-600 ml-auto">POST /attendee/*</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span>user.js</span>
+                    <span className="text-gray-600 ml-auto">POST /user/*</span>
+                  </div>
+                  <div className="flex items-center gap-2 opacity-40">
+                    <span className="text-gray-600">○</span>
+                    <span>webhook.js</span>
+                    <span className="text-gray-600 ml-auto">TO BUILD</span>
+                  </div>
                 </div>
-                <div className="pl-6 text-gray-600 text-xs">title, dates, capacity</div>
+                <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">Frontend → API (HTTP)</div>
               </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-400">✓</span>
-                  <span>attendee.js</span>
+
+              {/* Services */}
+              <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-purple-400 font-semibold">services/</span>
+                  <span className="text-gray-500">External APIs</span>
                 </div>
-                <div className="pl-6 text-gray-600 text-xs">event_id, user_id, status</div>
+                <div className="space-y-2 text-gray-300">
+                  <div className="flex items-center gap-2 opacity-40">
+                    <span className="text-gray-600">○</span>
+                    <span>googleCalendar.js</span>
+                  </div>
+                  <div className="pl-6 text-gray-600 text-xs">Export events to Google</div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">API → External (Google, Stripe...)</div>
               </div>
-            </div>
-          </div>
+
+              {/* Crons */}
+              <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-yellow-400 font-semibold">cron/</span>
+                  <span className="text-gray-500">Scheduled jobs</span>
+                </div>
+                <div className="space-y-2 text-gray-300">
+                  <div className="flex items-center gap-2 opacity-40">
+                    <span className="text-gray-600">○</span>
+                    <span>eventReminders.js</span>
+                  </div>
+                  <div className="pl-6 text-gray-600 text-xs">Send reminders 24h before</div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">Time-triggered (automatic)</div>
+              </div>
+
+              {/* Scripts */}
+              <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-orange-400 font-semibold">scripts/</span>
+                  <span className="text-gray-500">Manual CLI</span>
+                </div>
+                <div className="space-y-2 text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400">✓</span>
+                    <span>seed.js</span>
+                    <span className="text-gray-600 ml-auto text-xs">npm run seed</span>
+                  </div>
+                  <div className="flex items-center gap-2 opacity-40">
+                    <span className="text-gray-600">○</span>
+                    <span>cleanupBadEvents.js</span>
+                  </div>
+                  <div className="pl-6 text-gray-600 text-xs">Delete events with 'not-good'</div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-700 text-gray-500 text-xs">Manual command (npm run)</div>
+              </div>
+
+              {/* Models */}
+              <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs col-span-2">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-emerald-400 font-semibold">models/</span>
+                  <span className="text-gray-500">MongoDB schemas</span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-gray-300">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-green-400">✓</span>
+                      <span>user.js</span>
+                    </div>
+                    <div className="pl-6 text-gray-600 text-xs">name, email, password</div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-green-400">✓</span>
+                      <span>event.js</span>
+                    </div>
+                    <div className="pl-6 text-gray-600 text-xs">title, dates, capacity</div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-green-400">✓</span>
+                      <span>attendee.js</span>
+                    </div>
+                    <div className="pl-6 text-gray-600 text-xs">event_id, user_id, status</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -169,14 +152,11 @@ export default function Dashboard() {
 
       {/* Collapsible Git Workflow */}
       <div className="mb-6">
-        <button
-          onClick={() => setShowGitWorkflow(!showGitWorkflow)}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-        >
+        <button onClick={() => setShowGitWorkflow(!showGitWorkflow)} className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900">
           <span>{showGitWorkflow ? "▼" : "▶"}</span>
           <span>Git Workflow & Pull Requests</span>
         </button>
-        
+
         {showGitWorkflow && (
           <div className="mt-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-lg p-6">
             <div className="flex items-start gap-4">
@@ -187,11 +167,21 @@ export default function Dashboard() {
                   <div>
                     <p className="font-semibold text-gray-900 mb-2">✅ DO:</p>
                     <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Fork first</strong> - work on your own copy</li>
-                      <li>• <strong>One feature = One PR</strong> (Venue, Calendar, Script...)</li>
-                      <li>• <strong>Full-stack & working</strong> - Backend + Frontend, tested</li>
-                      <li>• <strong>Self-contained</strong> - Each PR works independently</li>
-                      <li>• <strong>Clear commits</strong> - <code className="bg-indigo-100 px-1 rounded">feat: add venue module</code></li>
+                      <li>
+                        • <strong>Fork first</strong> - work on your own copy
+                      </li>
+                      <li>
+                        • <strong>One feature = One PR</strong> (Venue, Calendar, Script...)
+                      </li>
+                      <li>
+                        • <strong>Full-stack & working</strong> - Backend + Frontend, tested
+                      </li>
+                      <li>
+                        • <strong>Self-contained</strong> - Each PR works independently
+                      </li>
+                      <li>
+                        • <strong>Clear commits</strong> - <code className="bg-indigo-100 px-1 rounded">feat: add venue module</code>
+                      </li>
                     </ul>
                   </div>
                   <div>
@@ -235,22 +225,22 @@ export default function Dashboard() {
               {
                 label: "Read Backend",
                 files: ["api/src/models/event.js", "api/src/controllers/event.js"],
-                notes: "Focus on 📚 comments - they explain WHY",
+                notes: "Focus on 📚 comments - they explain WHY"
               },
               {
                 label: "Read Frontend",
                 files: ["app/src/scenes/events/list.jsx", "app/src/scenes/events/view/*"],
-                notes: "See how frontend calls backend endpoints",
+                notes: "See how frontend calls backend endpoints"
               },
               {
                 label: "Test Features",
-                notes: "Create event, edit, delete, search - understand the flow",
-              },
+                notes: "Create event, edit, delete, search - understand the flow"
+              }
             ]}
             resources={[
               { label: "Mongoose Docs", url: "https://mongoosejs.com/docs/guide.html" },
               { label: "Express Routing", url: "https://expressjs.com/en/guide/routing.html" },
-              { label: "POST /search pattern", note: "See event.js line 27-40" },
+              { label: "POST /search pattern", note: "See event.js line 27-40" }
             ]}
             deliverable="Can explain: Why POST for search? What's pagination? Why denormalize organizer?"
           />
@@ -267,27 +257,27 @@ export default function Dashboard() {
               {
                 label: "Backend (Day 2 morning)",
                 files: ["api/src/models/venue.js", "api/src/controllers/venue.js"],
-                notes: "Fields: name, address, city, capacity, amenities, image_url, owner_id",
+                notes: "Fields: name, address, city, capacity, amenities, image_url, owner_id"
               },
               {
                 label: "Register Route",
                 files: ["api/src/index.js"],
-                notes: 'Add: app.use("/venue", require("./controllers/venue"))',
+                notes: 'Add: app.use("/venue", require("./controllers/venue"))'
               },
               {
                 label: "Frontend (Day 2 afternoon + Day 3)",
                 files: ["app/src/scenes/venues/index.jsx", "app/src/scenes/venues/list.jsx", "app/src/scenes/venues/view/*"],
-                notes: "Copy Event pages structure (index, list, view tabs), adapt for Venue fields",
+                notes: "Copy Event pages structure (index, list, view tabs), adapt for Venue fields"
               },
               {
                 label: "Test Everything",
-                notes: "Create, search, update, delete venues - all should work",
-              },
+                notes: "Create, search, update, delete venues - all should work"
+              }
             ]}
             resources={[
               { label: "Reference", note: "Copy Event module 1:1, change field names" },
               { label: "Security", note: "Remember: owner_id from req.user, not req.body!" },
-              { label: "Routes", note: "POST /venue/search, POST /venue/my-venues/search, etc." },
+              { label: "Routes", note: "POST /venue/search, POST /venue/my-venues/search, etc." }
             ]}
             deliverable="Working Venue module with CRUD + search. Can create PR with clear commit messages."
           />
@@ -304,22 +294,22 @@ export default function Dashboard() {
               {
                 label: "Service",
                 files: ["api/src/services/googleCalendar.js"],
-                notes: "Function: exportEvent(eventId) → posts to Google Calendar API",
+                notes: "Function: exportEvent(eventId) → posts to Google Calendar API"
               },
               {
                 label: "Webhook",
                 files: ["api/src/controllers/webhook.js"],
-                notes: "POST /webhook/calendar-sync → receives updates from Google",
+                notes: "POST /webhook/calendar-sync → receives updates from Google"
               },
               {
                 label: "Call Service from Controller",
-                notes: "In event.js, call googleCalendar.exportEvent() after event creation",
-              },
+                notes: "In event.js, call googleCalendar.exportEvent() after event creation"
+              }
             ]}
             resources={[
               { label: "Google Calendar API", url: "https://developers.google.com/calendar/api/v3/reference" },
               { label: "Webhooks Explained", url: "https://www.svix.com/resources/guides/what-is-a-webhook/" },
-              { label: "Key Difference", note: "Service = YOU call API. Webhook = API calls YOU." },
+              { label: "Key Difference", note: "Service = YOU call API. Webhook = API calls YOU." }
             ]}
             deliverable="Can explain: When to use Service vs Webhook? How does Google notify us of changes?"
           />
@@ -336,28 +326,28 @@ export default function Dashboard() {
               {
                 label: "Cron Job",
                 files: ["api/src/cron/eventReminders.js"],
-                notes: "Runs every hour, finds events starting in 24h, sends emails",
+                notes: "Runs every hour, finds events starting in 24h, sends emails"
               },
               {
                 label: "Setup Cron",
                 files: ["api/src/index.js"],
-                notes: "Register cron: require('./cron/eventReminders').start()",
+                notes: "Register cron: require('./cron/eventReminders').start()"
               },
               {
                 label: "Cleanup Script",
                 files: ["api/src/scripts/cleanupBadEvents.js"],
-                notes: "Finds & deletes events with 'not-good' in title (run seed to see test data)",
+                notes: "Finds & deletes events with 'not-good' in title (run seed to see test data)"
               },
               {
                 label: "Add npm script",
                 files: ["api/package.json"],
-                notes: '"cleanup": "node ./src/scripts/cleanupBadEvents.js"',
-              },
+                notes: '"cleanup": "node ./src/scripts/cleanupBadEvents.js"'
+              }
             ]}
             resources={[
               { label: "node-cron", url: "https://www.npmjs.com/package/node-cron" },
               { label: "Test Data", note: "Seed creates 3 events with 'not-good' in title" },
-              { label: "Key Difference", note: "Cron = automatic (time-based). Script = manual (npm run)." },
+              { label: "Key Difference", note: "Cron = automatic (time-based). Script = manual (npm run)." }
             ]}
             deliverable="Cron runs automatically. Script runs on command. Can explain when to use each."
           />
@@ -368,34 +358,42 @@ export default function Dashboard() {
               <span className="text-3xl">🚪</span>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Week 1 Gatekeeper: The "WHY" Check</h3>
-                <p className="text-sm text-gray-700 mb-3">
-                  Before moving to Week 2, you must be able to explain (without looking at code):
-                </p>
+                <p className="text-sm text-gray-700 mb-3">Before moving to Week 2, you must be able to explain (without looking at code):</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-start gap-2">
                     <span className="text-indigo-600 font-bold">1.</span>
-                    <span><strong>POST vs GET for search:</strong> Why do we use POST /event/search instead of GET?</span>
+                    <span>
+                      <strong>POST vs GET for search:</strong> Why do we use POST /event/search instead of GET?
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-indigo-600 font-bold">2.</span>
-                    <span><strong>Service vs Webhook:</strong> When do you create a Service file vs a Webhook endpoint?</span>
+                    <span>
+                      <strong>Service vs Webhook:</strong> When do you create a Service file vs a Webhook endpoint?
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-indigo-600 font-bold">3.</span>
-                    <span><strong>Cron vs Script:</strong> When do you use a Cron job vs a manual Script?</span>
+                    <span>
+                      <strong>Cron vs Script:</strong> When do you use a Cron job vs a manual Script?
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-indigo-600 font-bold">4.</span>
-                    <span><strong>Security:</strong> Why do we set organizer_id from req.user instead of req.body?</span>
+                    <span>
+                      <strong>Security:</strong> Why do we set organizer_id from req.user instead of req.body?
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="text-indigo-600 font-bold">5.</span>
-                    <span><strong>Denormalization:</strong> Why store organizer_name in Event model instead of just organizer_id?</span>
+                    <span>
+                      <strong>Denormalization:</strong> Why store organizer_name in Event model instead of just organizer_id?
+                    </span>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-indigo-200">
                   <p className="text-xs text-gray-600">
-                    💡 <strong>Hint:</strong> All answers are in the 📚 comments in event.js. Understanding WHY > memorizing HOW.
+                    💡 <strong>Hint:</strong> All answers are in the 📚 comments in event.js. Understanding WHY &gt; memorizing HOW.
                   </p>
                 </div>
               </div>
@@ -491,4 +489,3 @@ function TaskCard({ day, title, duration, icon, what, why, tasks, resources, del
     </div>
   )
 }
-
