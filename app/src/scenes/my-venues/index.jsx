@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { AiOutlineCalendar, AiOutlinePlus } from "react-icons/ai"
+import { AiOutlineCalendar, AiOutlinePlus, AiOutlineInfoCircle, AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai"
+import { BsThreeDotsVertical } from "react-icons/bs"
 import { Menu } from "@headlessui/react"
 import api from "@/services/api"
 import toast from "react-hot-toast"
-import CreateVenueModal from "./components/CreateVenueModal"
+import CreateVenueModal from "../../components/CreateVenueModal"
 import useStore from "@/services/store"
 
 export default function MyVenues() {
@@ -77,15 +78,7 @@ export default function MyVenues() {
 
         <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
           <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
+            <AiOutlineInfoCircle className="w-5 h-5 text-purple-400" />
             <div className="ml-3">
               <h3 className="text-sm font-medium text-purple-800">Your Venues Dashboard</h3>
               <div className="mt-2 text-sm text-purple-700">
@@ -182,9 +175,7 @@ function VenueRow({ venue, onDelete }) {
 
         <Menu as="div" className="relative ml-4">
           <Menu.Button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-            </svg>
+            <BsThreeDotsVertical className="w-5 h-5 text-gray-600" />
           </Menu.Button>
 
           <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
@@ -192,15 +183,7 @@ function VenueRow({ venue, onDelete }) {
               <Menu.Item>
                 {({ active }) => (
                   <button onClick={() => navigate(`/venue/${venue._id}`)} className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}>
-                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
+                    <AiOutlineEye className="w-4 h-4 mr-3" />
                     View Details
                   </button>
                 )}
@@ -212,14 +195,7 @@ function VenueRow({ venue, onDelete }) {
                     onClick={() => navigate(`/venue/${venue._id}/edit`)}
                     className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                   >
-                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
+                    <AiOutlineEdit className="w-4 h-4 mr-3" />
                     Edit Venue
                   </button>
                 )}
@@ -231,14 +207,7 @@ function VenueRow({ venue, onDelete }) {
                     onClick={() => navigate(`/venue/${venue._id}/events`)}
                     className={`${active ? "bg-gray-100" : ""} flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                   >
-                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
+                    <AiOutlineEvent className="w-4 h-4 mr-3" />
                     View Events
                   </button>
                 )}
@@ -249,14 +218,7 @@ function VenueRow({ venue, onDelete }) {
               <Menu.Item>
                 {({ active }) => (
                   <button onClick={() => onDelete(venue._id)} className={`${active ? "bg-red-50" : ""} flex items-center w-full px-4 py-2 text-sm text-red-600`}>
-                    <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
+                    <AiOutlineDelete className="w-4 h-4 mr-3" />
                     Delete Venue
                   </button>
                 )}
