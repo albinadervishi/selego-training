@@ -1,5 +1,6 @@
 const { google } = require("googleapis");
 const { GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_CALENDAR_ID } = require("../config");
+const { API_URL } = require("../config");
 
 const auth = new google.auth.JWT({
   email: GOOGLE_CLIENT_EMAIL,
@@ -31,8 +32,6 @@ async function exportEvent(event) {
       calendarId: GOOGLE_CALENDAR_ID || "primary",
       resource: googleEvent,
     });
-
-    console.log(`Event exported to Google Calendar: ${response.data.id}`);
 
     return {
       ok: true,
@@ -69,7 +68,6 @@ async function updateEvent(googleEventId, event) {
       resource: googleEvent,
     });
 
-    console.log(`Google Calendar event updated: ${googleEventId}`);
     return { ok: true, data: response.data };
   } catch (error) {
     console.error("Error updating event in Google Calendar:", error.message);
@@ -84,10 +82,70 @@ async function deleteEvent(googleEventId) {
       eventId: googleEventId,
     });
 
-    console.log(`Google Calendar event deleted: ${googleEventId}`);
     return { ok: true };
   } catch (error) {
     console.error("Error deleting event in Google Calendar:", error.message);
+    return { ok: false, error: error.message };
+  }
+}
+
+async function watchCalendar() {
+  try {
+    const response = await calendar.events.watch({
+      calendarId: GOOGLE_CALENDAR_ID || "primary",
+      resource: {
+        id: `eventhub-channel-${Date.now()}`,
+        type: "web_hook",
+        address: `${API_URL}/webhook/google-calendar-sync`,
+        expiration: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      },
+    });
+
+    return { ok: true, data: response.data };
+  } catch (error) {
+    console.error("Failed to watch calendar:", error.message);
+    return { ok: false, error: error.message };
+  }
+}
+
+async function getChangedEvents(syncToken = null) {
+  try {
+    const params = {
+      calendarId: GOOGLE_CALENDAR_ID || "primary",
+      singleEvents: true,
+    };
+
+    if (syncToken) {
+      params.syncToken = syncToken;
+    } else {
+      params.timeMin = new Date().toISOString();
+    }
+
+    const response = await calendar.events.list(params);
+
+    return {
+      ok: true,
+      events: response.data.items || [],
+      nextSyncToken: response.data.nextSyncToken,
+    };
+  } catch (error) {
+    if (error.code === 410) {
+      console.log("SyncToken expired, doing full sync");
+      return getChangedEvents(null);
+    }
+    console.error("Failed to get changes:", error);
+    return { ok: false, error: error.message };
+  }
+}
+
+async function stopWatching(channelId, resourceId) {
+  try {
+    await calendar.channels.stop({
+      resource: { id: channelId, resourceId },
+    });
+    return { ok: true };
+  } catch (error) {
+    console.error("Failed to stop watching:", error);
     return { ok: false, error: error.message };
   }
 }
@@ -96,4 +154,7 @@ module.exports = {
   exportEvent,
   updateEvent,
   deleteEvent,
+  watchCalendar,
+  getChangedEvents,
+  stopWatching,
 };
