@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const EventObject = require("../models/event");
-const { notifyEventChange, sendOwnerReminder } = require("../services/emailNotification");
 const { CRON_SECRET } = require("../config");
 const { getChangedEvents, watchCalendar } = require("./googleCalendar");
 
@@ -10,7 +9,6 @@ let calendarSyncToken = null;
 router.post("/google-calendar-sync", async (req, res) => {
   try {
     const resourceState = req.headers["x-goog-resource-state"];
-    const channelId = req.headers["x-goog-channel-id"];
 
     res.status(200).send({ ok: true });
 
