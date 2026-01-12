@@ -6,7 +6,7 @@ const EventObject = require("../models/event");
 const VenueObject = require("../models/venue");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
-const { exportEvent, updateEvent, deleteEvent } = require("../controllers/googleCalendar");
+const { exportEvent, updateEvent, deleteEvent } = require("../services/googleCalendar");
 const { notifyEventChange } = require("../services/emailNotification");
 
 /**
@@ -214,7 +214,7 @@ router.post("/", passport.authenticate("user", { session: false }), async (req, 
     }
 
     // 📚 201 = Created (new resource was created successfully)
-    return res.status(201).send({ ok: true, data: event });
+    return res.status(200).send({ ok: true, data: event });
   } catch (error) {
     capture(error);
     res.status(500).send({ ok: false, code: ERROR_CODES.SERVER_ERROR, error });
