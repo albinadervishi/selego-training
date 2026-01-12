@@ -6,7 +6,7 @@ const EventObject = require("../models/event");
 const VenueObject = require("../models/venue");
 const ERROR_CODES = require("../utils/errorCodes");
 const { capture } = require("../services/sentry");
-const { exportEvent, updateEvent, deleteEvent } = require("../controllers/googleCalendar");
+const { exportEvent, updateEvent, deleteEvent } = require("../services/googleCalendar");
 
 /**
  * 📚 LEARNING NOTE: Controller Organization & Role-Based Access
