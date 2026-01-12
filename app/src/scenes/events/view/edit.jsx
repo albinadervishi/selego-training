@@ -40,7 +40,7 @@ export default function EditTab({ event, fetchEvent }) {
         description: event.description || "",
         start_date: event.start_date ? new Date(event.start_date).toISOString().slice(0, 16) : "",
         end_date: event.end_date ? new Date(event.end_date).toISOString().slice(0, 16) : "",
-        venue: event.venue_id || "",
+        venue_id: event.venue_id || "",
         price: event.price || 0,
         currency: event.currency || "EUR",
         category: event.category || "other",

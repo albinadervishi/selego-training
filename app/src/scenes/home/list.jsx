@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineUser } from "react-icons/ai"
 import api from "@/services/api"
 import toast from "react-hot-toast"
+import EventCard from "@/components/events/EventCard"
 
 export default function ListView() {
   const [events, setEvents] = useState([])
