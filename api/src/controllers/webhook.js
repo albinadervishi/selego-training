@@ -29,10 +29,19 @@ router.post("/google-calendar-sync", async (req, res) => {
           if (googleEvent.status === "cancelled") {
             await EventObject.findOneAndDelete({ google_calendar_id: googleEvent.id });
           } else {
-            await EventObject.findOneAndUpdate(
-              { google_calendar_id: googleEvent.id },
-              { $set: { title: googleEvent.summary } },
-            );
+            const updates = {
+              title: googleEvent.summary,
+              description: googleEvent.description || "",
+            };
+
+            if (googleEvent.start?.dateTime) {
+              updates.start_date = new Date(googleEvent.start.dateTime);
+            }
+            if (googleEvent.end?.dateTime) {
+              updates.end_date = new Date(googleEvent.end.dateTime);
+            }
+
+            await EventObject.findOneAndUpdate({ google_calendar_id: googleEvent.id }, { $set: updates });
           }
         }
       }
